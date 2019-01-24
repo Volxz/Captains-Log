@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:captains_log/pages/TeleopStatsPage.dart';
+import 'package:captains_log/widgets/DropDownSelector.dart';
 
 class StatSetup extends StatelessWidget {
   @override
@@ -8,14 +9,18 @@ class StatSetup extends StatelessWidget {
     final _matchNumberController = new TextEditingController();
     final FocusNode _teamNumFocus = FocusNode();
     final FocusNode _matchNumFocus = FocusNode();
+
+    final DropDownSelector matchTypeSelector = new DropDownSelector(['P', 'Q', 'F']);
+
     void displayTeleopStats() {
       //TODO ADD VERIFICATION
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  TeleopStatsPage(num.parse(_teamNumberController.text), "Q2")));
+              builder: (context) => TeleopStatsPage(
+                  num.parse(_teamNumberController.text), matchTypeSelector.getCurrentOption())));
     }
+
 
     final splashBackgroundWidget = Positioned(
       top: 0.0,
@@ -33,8 +38,7 @@ class StatSetup extends StatelessWidget {
       controller: _teamNumberController,
       textInputAction: TextInputAction.next,
       focusNode: _teamNumFocus,
-
-      onFieldSubmitted: (term){
+      onFieldSubmitted: (term) {
         _teamNumFocus.unfocus();
         FocusScope.of(context).requestFocus(_matchNumFocus);
       },
@@ -50,7 +54,7 @@ class StatSetup extends StatelessWidget {
       controller: _matchNumberController,
       textInputAction: TextInputAction.done,
       focusNode: _matchNumFocus,
-      onFieldSubmitted: (term){
+      onFieldSubmitted: (term) {
         _matchNumFocus.unfocus();
         displayTeleopStats();
       },
@@ -66,7 +70,9 @@ class StatSetup extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24.0),
           ),
-          onPressed: () {displayTeleopStats();},
+          onPressed: () {
+            displayTeleopStats();
+          },
           padding: EdgeInsets.all(12.0),
           color: Colors.lightBlueAccent,
           child: Text('Blast Off!', style: TextStyle(color: Colors.white)),
@@ -80,6 +86,12 @@ class StatSetup extends StatelessWidget {
             SizedBox(height: 300.0),
             teamNumberField,
             SizedBox(height: 8.0),
+            Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.center,
+                width: 30.0,
+                height: 30.0,
+                child: matchTypeSelector),
             matchNumberField,
             SizedBox(height: 24.0),
             blastOffButton
