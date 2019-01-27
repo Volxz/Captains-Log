@@ -15,11 +15,13 @@ class StatSetup extends StatelessWidget {
 
     void displayTeleopStats() {
       //TODO ADD VERIFICATION
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => TeleopStatsPage(
-                  num.parse(_teamNumberController.text), _matchType)));
+                  num.parse(_teamNumberController.text),
+                  _matchType,
+                  num.parse(_matchNumberController.text))));
     }
 
     final teamNumberField = TextFormField(
@@ -93,14 +95,13 @@ class StatSetup extends StatelessWidget {
 }
 
 class DropDownSelector extends StatefulWidget {
-  const DropDownSelector({Key key})
-      : super(key: key);
+  const DropDownSelector({Key key}) : super(key: key);
 
   _DropDownState createState() => new _DropDownState();
 }
 
 class _DropDownState extends State<DropDownSelector> {
-  List _options = ['p','q','f'];
+  List _options = ['p', 'q', 'f'];
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
   @override
@@ -111,6 +112,7 @@ class _DropDownState extends State<DropDownSelector> {
       onChanged: changedDropDownItem,
     );
   }
+
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
