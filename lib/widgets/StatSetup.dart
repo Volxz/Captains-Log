@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:captains_log/pages/TeleopStatsPage.dart';
-import 'package:captains_log/widgets/DropDownSelector.dart';
+import 'package:captains_log/widgets/SplashBackground.dart';
+
+String _matchType = "unset";
 
 class StatSetup extends StatelessWidget {
   @override
@@ -8,9 +10,8 @@ class StatSetup extends StatelessWidget {
     final _teamNumberController = new TextEditingController();
     final _matchNumberController = new TextEditingController();
     final FocusNode _teamNumFocus = FocusNode();
+    final FocusNode _matcTypeFocus = FocusNode();
     final FocusNode _matchNumFocus = FocusNode();
-
-    final DropDownSelector matchTypeSelector = new DropDownSelector(['P', 'Q', 'F']);
 
     void displayTeleopStats() {
       //TODO ADD VERIFICATION
@@ -18,20 +19,9 @@ class StatSetup extends StatelessWidget {
           context,
           MaterialPageRoute(
               builder: (context) => TeleopStatsPage(
-                  num.parse(_teamNumberController.text), matchTypeSelector.getCurrentOption())));
+                  num.parse(_teamNumberController.text), _matchType)));
     }
 
-
-    final splashBackgroundWidget = Positioned(
-      top: 0.0,
-      left: 0.0,
-      right: 0.0,
-      height: MediaQuery.of(context).size.height,
-      child: Image.asset(
-        'assets/frcbackgroundps.png',
-        fit: BoxFit.cover,
-      ),
-    );
     final teamNumberField = TextFormField(
       keyboardType: TextInputType.number,
       autofocus: false,
@@ -80,7 +70,7 @@ class StatSetup extends StatelessWidget {
 
     return new Stack(
       children: <Widget>[
-        splashBackgroundWidget,
+        SplashBackground(),
         Center(
           child: ListView(physics: PageScrollPhysics(), children: <Widget>[
             SizedBox(height: 300.0),
@@ -91,7 +81,7 @@ class StatSetup extends StatelessWidget {
                 alignment: Alignment.center,
                 width: 30.0,
                 height: 30.0,
-                child: matchTypeSelector),
+                child: new DropDownSelector()),
             matchNumberField,
             SizedBox(height: 24.0),
             blastOffButton
@@ -99,5 +89,46 @@ class StatSetup extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class DropDownSelector extends StatefulWidget {
+  const DropDownSelector({Key key})
+      : super(key: key);
+
+  _DropDownState createState() => new _DropDownState();
+}
+
+class _DropDownState extends State<DropDownSelector> {
+  List _options = ['p','q','f'];
+  List<DropdownMenuItem<String>> _dropDownMenuItems;
+
+  @override
+  Widget build(BuildContext context) {
+    return new DropdownButton(
+      value: _matchType,
+      items: _dropDownMenuItems,
+      onChanged: changedDropDownItem,
+    );
+  }
+  @override
+  void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _matchType = _dropDownMenuItems[0].value;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = new List();
+    for (String option in _options) {
+      items.add(new DropdownMenuItem(value: option, child: new Text(option)));
+    }
+    return items;
+  }
+
+  void changedDropDownItem(String selectedOption) {
+    setState(() {
+      _matchType = selectedOption;
+    });
   }
 }
